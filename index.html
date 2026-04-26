@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SLM | SGOU</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #080c1a;
+      color: #e0e8ff;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .title {
+      font-family: 'Courier New', monospace;
+      font-size: 52px;
+      letter-spacing: 0.02em;
+      color: #e0e8ff;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .title span {
+      color: #5771ff;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: rgba(224, 232, 255, 0.5);
+      margin-bottom: 28px;
+      font-family: monospace;
+    }
+
+    .card {
+      background: #0e1428;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+
+    }
+
+    .card-label {
+      font-family: monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(224, 232, 255, 0.35);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    input[type=text] {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0;
+      border-radius: 0;
+      color: #e0e8ff;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 0;
+    }
+
+    input[type=text]:focus {
+      border-color: #5771ff66;
+    }
+
+    .gen-btn {
+      width: 100%;
+      background: #5771ff;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 18px 0;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: block;
+    }
+
+    .gen-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px #5771ff44;
+      filter: brightness(1.05);
+    }
+
+    .gen-btn:active {
+      transform: translateY(0);
+    }
+
+    #result {
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+      color: rgba(224, 232, 255, 0.5);
+      min-height: 46px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 10px;
+    }
+
+    #result:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    #result.has-val {
+      color: #e0e8ff;
+    }
+
+    #result .hl {
+      color: #5771ff;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .grid-deco {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      opacity: 0.04;
+      background-image: linear-gradient(#5771ff 1px, transparent 1px), linear-gradient(90deg, #5771ff 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+    }
+
+    @keyframes bgShift {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    body {
+      background: linear-gradient(135deg, #080c1a, #080c1add, #0e1428cc) !important;
+      background-size: 400% 400% !important;
+      animation: bgShift 12s ease infinite;
+    }
+
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.05) 2px, rgba(0, 0, 0, 0.05) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+
+    input:focus,
+    textarea:focus {
+      box-shadow: 0 0 0 3px #5771ff22, 0 0 15px #5771ff15 !important;
+    }
+
+
+    .grid-deco {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      opacity: 0.04;
+      background-image: linear-gradient(#5771ff 1px, transparent 1px), linear-gradient(90deg, #5771ff 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+    }
+
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .wrap {
+      animation: fadeUp 0.6s ease both;
+    }
+
+
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 50%;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(100vh) scale(1);
+        opacity: 0.6;
+      }
+
+      to {
+        transform: translateY(-100px) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    @media(max-width:480px) {
+      .wrap {
+        padding: 0;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+      }
+    }
+
+    button {
+      width: 100%;
+      background: #5771ff;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 18px 0;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="grid-deco"></div>
+
+  <div class="wrap">
+    <div style="margin-bottom:32px;">
+      <h1 class="title"><span style="margin-right:10px;font-size:0.8em;">✦</span><span>SLMGen</span></h1>
+      <div class="tagline">Get your SLM - By Researcher Tizar</div>
+    </div>
+
+
+    <div class="card">
+      <div class="card-label">Variables</div>
+
+      <div style="margin-bottom:14px;">
+        <label
+          style="display:block;font-size:14px;font-family:monospace;font-weight: bold; color:#5771ff;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Course Code</label>
+        <input class="vi" type="text" data-var="course_code" placeholder="Enter course_code…"
+          style="width:100%;background:transparent;border:none; border-bottom:1px solid rgba(255,255,255,0.2); border-radius:0;border-radius:14px;color:#e0e8ff;font-family:monospace;font-size:13px;padding:11px 14px;outline:none;transition:border-color 0.2s;box-sizing:border-box;" />
+        <div id="charCount"
+          style="text-align:right;font-size:10px;font-family:monospace;color:rgba(255,255,255,0.3);margin-top:4px;">
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="card">
+      <div class="card-label">Generate</div>
+      <button class="gen-btn" onclick="doGenerate()">Generate Link</button>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Result</div>
+      <div id="result" onclick="doCopy()">Fill the fields and click Generate.</div>
+      <div class="action-row">
+        <button onclick="doCopy()"
+          style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;color:#e0e8ff;font-family:monospace;font-size:12px;padding:10px;cursor:pointer;transition:all 0.2s;"
+          onmouseover="this.style.background='rgba(255,255,255,0.12)'"
+          onmouseout="this.style.background='rgba(255,255,255,0.07)'">⎘ Copy</button>
+        <button id="openBtn" onclick="doOpen()"
+          style="display:none;flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;color:#e0e8ff;font-family:monospace;font-size:12px;padding:10px;cursor:pointer;transition:all 0.2s;"
+          onmouseover="this.style.background='rgba(255,255,255,0.12)'"
+          onmouseout="this.style.background='rgba(255,255,255,0.07)'">↗ Open</button>
+        <button id="qrBtnEl" onclick="showQR(lastLink)"
+          style="display:none;flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;color:#e0e8ff;font-family:monospace;font-size:12px;padding:10px;cursor:pointer;">⊞
+          QR</button>
+        <button onclick="location.reload()" id="refresh" style="display:none;flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;color:#e0e8ff;font-family:monospace;font-size:12px;padding:10px;cursor:pointer">Refresh</button>
+      </div>
+
+      <div id="qrWrap" style="display:none;margin-top:16px;text-align:center;">
+        <img id="qrImg" src="" alt="QR Code"
+          style="width:160px;height:160px;border-radius:10px;background:#fff;padding:8px;" />
+      </div>
+
+    </div>
+
+
+    <div id="histSection" style="display:none;">
+      <div
+        style="font-size:10px;font-family:monospace;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">
+        Recent Links</div>
+      <div id="histList" style="display:flex;flex-direction:column;gap:6px;"></div>
+      <button onclick="clearHist()"
+        style="margin-top:8px;background:transparent;border:none;color:rgba(255,255,255,0.3);font-size:11px;cursor:pointer;font-family:monospace;">Clear
+        history</button>
+    </div>
+
+    <div style="text-align:center;padding:30px 0 0;font-size:11px;font-family:monospace;color:rgba(255,255,255,0.2);">By
+      Researcher Tizar</div>
+  </div>
+
+
+  <!-- <button id="themeBtn" onclick="toggleTheme()"
+    style="position:fixed;top:16px;right:16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:50%;width:40px;height:40px;color:#e0e8ff;font-size:16px;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;">☀</button>
+  <script>
+    let dark = true;
+    function toggleTheme() {
+      dark = !dark;
+      document.body.style.background = dark ? '#080c1a' : '#f8f8f8';
+      document.body.style.color = dark ? '#e0e8ff' : '#111';
+      document.getElementById('themeBtn').textContent = dark ? '☀' : '🌙';
+    }
+  </script> -->
+
+
+  <script>
+    const TEMPLATE = "https://d2f9lckj2oznig.cloudfront.net/{course_code}/index.html";
+    const VARS = ["course_code"];
+    let lastLink = '';
+
+
+    function spawnConfetti() {
+      const colors = ['#5771ff', '#57c8ff', '#ff57a8', '#ffd657'];
+      for (let i = 0; i < 60; i++) setTimeout(() => {
+        const p = document.createElement('div');
+        p.style.cssText = 'position:fixed;top:0;left:' + Math.random() * 100 + 'vw;width:8px;height:8px;border-radius:' + (Math.random() > .5 ? '50%' : '2px') + ';background:' + colors[Math.floor(Math.random() * colors.length)] + ';z-index:9999;pointer-events:none;animation:fall ' + (0.8 + Math.random() * 1.2) + 's linear forwards';
+        document.body.appendChild(p); setTimeout(() => p.remove(), 2000);
+      }, i * 25);
+    }
+    const style = document.createElement('style');
+    style.textContent = '@keyframes fall{from{transform:translateY(-20px) rotate(0);opacity:1}to{transform:translateY(100vh) rotate(720deg);opacity:0}}';
+    document.head.appendChild(style);
+
+
+    function showQR(url) {
+      const wrap = document.getElementById('qrWrap');
+      const img = document.getElementById('qrImg');
+      if (wrap && img) { img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(url); wrap.style.display = ''; }
+    }
+
+
+    let hist = JSON.parse(localStorage.getItem('lgh') || '[]');
+    function addHist(l) { hist = [l, ...hist.filter(x => x !== l)].slice(0, 10); localStorage.setItem('lgh', JSON.stringify(hist)); renderHist(); }
+    function clearHist() { hist = []; localStorage.removeItem('lgh'); renderHist(); }
+    function renderHist() {
+      const s = document.getElementById('histSection');
+      const hl = document.getElementById('histList');
+      if (!s || !hl) return;
+      if (!hist.length) { s.style.display = 'none'; return; }
+      s.style.display = ''; hl.innerHTML = '';
+      hist.forEach(l => {
+        const d = document.createElement('div');
+        d.style.cssText = 'padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-family:monospace;font-size:10px;word-break:break-all;cursor:pointer;color:rgba(255,255,255,0.6);';
+        d.textContent = l; d.onclick = () => { navigator.clipboard.writeText(l).catch(() => { }); };
+        hl.appendChild(d);
+      });
+    }
+    renderHist();
+
+
+    function validateUrl(url) {
+      try { new URL(url); return true; } catch { return false; }
+    }
+    function showValidation(valid, url) {
+      let vEl = document.getElementById('validMsg');
+      if (!vEl) { vEl = document.createElement('div'); vEl.id = 'validMsg'; vEl.style.cssText = 'font-size:11px;font-family:monospace;margin-top:6px;padding:6px 10px;border-radius:6px;'; document.getElementById('result').after(vEl); }
+      if (!url) { vEl.style.display = 'none'; return; }
+      vEl.style.display = '';
+      if (valid) { vEl.style.background = 'rgba(79,255,154,0.1)'; vEl.style.color = '#4fff9a'; vEl.textContent = '✓ Valid URL'; }
+      else { vEl.style.background = 'rgba(255,79,79,0.1)'; vEl.style.color = '#ff4f4f'; vEl.textContent = '⚠ URL may be invalid'; }
+    }
+
+    document.querySelectorAll('.vi').forEach(i => i.addEventListener('input', updateCharCounts)); function updateCharCounts() { document.querySelectorAll('.vi').forEach(i => { const next = i.nextElementSibling; if (next && next.id === 'charCount') next.textContent = i.value.length + ' chars'; }); }
+
+    (function () {
+      const colors = ['#5771ff33', '#5771ff22'];
+      for (let i = 0; i < 15; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 6 + 3;
+        p.style.cssText = 'width:' + size + 'px;height:' + size + 'px;background:' + colors[Math.floor(Math.random() * colors.length)] + ';left:' + Math.random() * 100 + 'vw;animation-duration:' + (8 + Math.random() * 12) + 's;animation-delay:' + (Math.random() * 10) + 's;';
+        document.body.appendChild(p);
+      }
+    })();
+
+
+    function buildLink() {
+      let t = TEMPLATE;
+      VARS.forEach(v => {
+        const inp = document.querySelector('[data-var="' + v + '"]');
+        const val = inp ? inp.value : '';
+        t = t.split('{' + v + '}').join(val || ('{' + v + '}'));
+      });
+      return t;
+    }
+
+    function doGenerate() {
+      const link = buildLink();
+      const allFilled = VARS.every(v => document.querySelector('[data-var="' + v + '"]')?.value);
+      const result = document.getElementById('result');
+      if (!link) return;
+      if (VARS.length && !allFilled) { result.innerHTML = '<span style="color:#ff4f4f;">⚠ Fill all fields first!</span>'; return; }
+      lastLink = link;
+      let html = link.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      VARS.forEach(v => {
+        const val = document.querySelector('[data-var="' + v + '"]')?.value || '';
+        if (val) html = html.split(val.replace(/&/g, '&amp;')).join('<span class="hl">' + val + '</span>');
+      });
+      result.innerHTML = html;
+      result.className = 'has-val';
+      const openBtn = document.getElementById('openBtn');
+      if (openBtn) openBtn.style.display = '';
+      const qrBtnEl = document.getElementById('qrBtnEl');
+      if (qrBtnEl) qrBtnEl.style.display = '';
+      const refreshBtnEl = document.getElementById('refresh');
+      if (refreshBtnEl) refreshBtnEl.style.display = '';
+      showValidation(validateUrl(link), link);
+      spawnConfetti();
+      addHist(link);
+    }
+
+    function doCopy() {
+      if (!lastLink) return;
+      navigator.clipboard.writeText(lastLink).catch(() => {
+        const ta = document.createElement('textarea'); ta.value = lastLink; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      });
+      const r = document.getElementById('result');
+      const orig = r.innerHTML;
+      r.innerHTML = '<span style="color:#5771ff;">✓ Copied!</span>';
+      setTimeout(() => r.innerHTML = orig, 1200);
+    }
+
+    function doOpen() { if (lastLink) window.open(lastLink, '_blank'); }
+
+    document.querySelectorAll('.vi').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') doGenerate(); }));
+
+  </script>
+</body>
+
+</html>
